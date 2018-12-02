@@ -1,6 +1,5 @@
 from flask import Flask
-from flask_restful import reqparse, abort, Api, Resource
-import pickle
+from flask_restful import reqparse, Api
 from utils import PredictInfluence
 
 '''API application
