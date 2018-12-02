@@ -35,7 +35,7 @@ class MLModel(object):
         """Load the model from the path
 
         """
-        with open(path, 'r') as f:
+        with open(path, 'rb') as f:
             self.clf_ = pickle.load(f)
 
     def predict_proba(self, X):
@@ -43,7 +43,7 @@ class MLModel(object):
         
         """
         y_proba = self.clf_.predict_proba(X)
-        return y_proba[:, 1]
+        return y_proba
 
     def predict(self, X):
         """Returns the predicted class in an array
