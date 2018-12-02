@@ -12,21 +12,6 @@ from model import MLModel
 
 class NetworkData:
     
-    def __init__(self,filename = ''):
-        '''Arguments:
-        data - pandas DF with the input data
-        columns - features used to make predictions
-        '''
-        self.columns_ = ['B_network_feature_1', 'A_network_feature_1',
-                        'B_listed_count', 'A_following_count', 'B_following_count',
-                        ]
-        if filename != '':
-            with open(filename,'r') as f:
-                self.data_ = pd.read_csv(f,sep=',')
-        # Check whether features are consistent with trained model
-            if not self.check_data():
-                raise ValueError('Input data do not included required features: {}'.format(self.columns_))
-
     def __init__(self, file):
         '''Arguments:
         data - pandas DF with the input data
@@ -35,18 +20,17 @@ class NetworkData:
         self.columns_ = ['B_network_feature_1', 'A_network_feature_1',
                          'B_listed_count', 'A_following_count', 'B_following_count',
                          ]
-        self.data_ = pd.read_csv(f, sep=',')
+        self.data_ = pd.read_csv(file, sep=',')
         # Check whether features are consistent with trained model
-            if not self.check_data():
-                raise ValueError(
-                    'Input data do not included required features: {}'.format(self.columns_))
+        if not self.check_data():
+            raise ValueError(
+                'Input data do not included required features: {}'.format(self.columns_))
 
-    def load_data(self,filename):
+    def load_data(self,file):
         '''Load .csv data
 
         '''
-        with open(filename,'r') as f:
-            self.data_ = pd.read_csv(f, sep=',')
+        self.data_ = pd.read_csv(file, sep=',')
         # Check whether features are consistent with trained model
         if not self.check_data():
             raise ValueError(
@@ -94,7 +78,8 @@ class InputParser():
         self.args_ = self.parser_.parse_args()
 
     def add_arguments_(self):
-        self.parser_.add_argument('input_file', required=True)
+        self.parser_.add_argument(
+            'input_file', required=True)
         self.parser_.add_argument(
             'classifier', type=str, help='Classifier: XGBoost or RandomForest', default='XGBoost')
     
@@ -123,7 +108,7 @@ class PredictInfluence(Resource):
         self.clf = MLModel(clf_name)
 
     def predict_proba(self):
-
+        # predict probabilities 
         predict_prob = self.clf.predict_proba(self.data.data_to_predict())
         # Convert probabilities to DF
         predictions_prob_df = pd.DataFrame(predict_prob[:, 0])
@@ -131,7 +116,7 @@ class PredictInfluence(Resource):
         return predictions_prob_df
 
     def predict(self):
-
+        # predict
         predict = self.clf.predict(self.data.data_to_predict())
         # Convert probabilities to DF
         predictions_df = pd.DataFrame(predict[:, 0])
@@ -139,10 +124,9 @@ class PredictInfluence(Resource):
         return predictions_df
 
     def get(self):
-
-        # Predict
+        # Make Prediction
         predict_prob = self.predict_proba()
         # create JSON object
         output = predict_prob.to_json()
-
-        return output
+        return 'lol'
+        #return output
